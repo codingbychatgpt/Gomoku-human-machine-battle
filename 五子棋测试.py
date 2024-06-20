@@ -1,4 +1,3 @@
-"""五子棋之人机对战"""
 
 import sys
 import random
@@ -26,7 +25,7 @@ class Checkerboard:
 
     checkerboard = property(_get_checkerboard)
 
-    # 判断是否可落子
+
     def can_drop(self, point):
         return self._checkerboard[point.Y][point.X] == 0
 
@@ -44,7 +43,7 @@ class Checkerboard:
             print(f'{chessman.Name}获胜')
             return chessman
 
-    # 判断是否赢了
+
     def _win(self, point):
         cur_value = self._checkerboard[point.Y][point.X]
         for os in offset:
@@ -71,19 +70,19 @@ class Checkerboard:
         return count >= 5
 
 
-SIZE = 30  # 棋盘每个点时间的间隔
-Line_Points = 19  # 棋盘每行/每列点数
-Outer_Width = 20  # 棋盘外宽度
-Border_Width = 4  # 边框宽度
-Inside_Width = 4  # 边框跟实际的棋盘之间的间隔
-Border_Length = SIZE * (Line_Points - 1) + Inside_Width * 2 + Border_Width  # 边框线的长度
-Start_X = Start_Y = Outer_Width + int(Border_Width / 2) + Inside_Width  # 网格线起点（左上角）坐标
-SCREEN_HEIGHT = SIZE * (Line_Points - 1) + Outer_Width * 2 + Border_Width + Inside_Width * 2  # 游戏屏幕的高
-SCREEN_WIDTH = SCREEN_HEIGHT + 200  # 游戏屏幕的宽
+SIZE = 30  
+Line_Points = 19  
+Outer_Width = 20  
+Border_Width = 4  
+Inside_Width = 4  
+Border_Length = SIZE * (Line_Points - 1) + Inside_Width * 2 + Border_Width  
+Start_X = Start_Y = Outer_Width + int(Border_Width / 2) + Inside_Width  
+SCREEN_HEIGHT = SIZE * (Line_Points - 1) + Outer_Width * 2 + Border_Width + Inside_Width * 2  
+SCREEN_WIDTH = SCREEN_HEIGHT + 200  
 
-Stone_Radius = SIZE // 2 - 3  # 棋子半径
+Stone_Radius = SIZE // 2 - 3  
 Stone_Radius2 = SIZE // 2 + 3
-Checkerboard_Color = (0xE3, 0x92, 0x65)  # 棋盘颜色
+Checkerboard_Color = (0xE3, 0x92, 0x65)  
 BLACK_COLOR = (0, 0, 0)
 WHITE_COLOR = (255, 255, 255)
 RED_COLOR = (200, 30, 30)
@@ -147,10 +146,10 @@ def main():
                         else:
                             print('超出棋盘区域')
 
-        # 画棋盘
+        
         _draw_checkerboard(screen)
 
-        # 画棋盘上已有的棋子
+        
         for i, row in enumerate(checkerboard.checkerboard):
             for j, cell in enumerate(row):
                 if cell == BLACK_CHESSMAN.Value:
@@ -174,13 +173,13 @@ def _get_next(cur_runner):
         return BLACK_CHESSMAN
 
 
-# 画棋盘
+
 def _draw_checkerboard(screen):
-    # 填充棋盘背景色
+    
     screen.fill(Checkerboard_Color)
-    # 画棋盘网格线外的边框
+    
     pygame.draw.rect(screen, BLACK_COLOR, (Outer_Width, Outer_Width, Border_Length, Border_Length), Border_Width)
-    # 画网格线
+    
     for i in range(Line_Points):
         pygame.draw.line(screen, BLACK_COLOR,
                          (Start_Y, Start_Y + SIZE * i),
@@ -191,7 +190,7 @@ def _draw_checkerboard(screen):
                          (Start_X + SIZE * j, Start_X),
                          (Start_X + SIZE * j, Start_X + SIZE * (Line_Points - 1)),
                          1)
-    # 画星位和天元
+    
     for i in (3, 9, 15):
         for j in (3, 9, 15):
             if i == j == 9:
@@ -203,14 +202,14 @@ def _draw_checkerboard(screen):
             pygame.gfxdraw.filled_circle(screen, Start_X + SIZE * i, Start_Y + SIZE * j, radius, BLACK_COLOR)
 
 
-# 画棋子
+
 def _draw_chessman(screen, point, stone_color):
     # pygame.draw.circle(screen, stone_color, (Start_X + SIZE * point.X, Start_Y + SIZE * point.Y), Stone_Radius)
     pygame.gfxdraw.aacircle(screen, Start_X + SIZE * point.X, Start_Y + SIZE * point.Y, Stone_Radius, stone_color)
     pygame.gfxdraw.filled_circle(screen, Start_X + SIZE * point.X, Start_Y + SIZE * point.Y, Stone_Radius, stone_color)
 
 
-# 画左侧信息显示
+
 def _draw_left_info(screen, font, cur_runner, black_win_count, white_win_count):
     _draw_chessman_pos(screen, (SCREEN_HEIGHT + Stone_Radius2, Start_X + Stone_Radius2), BLACK_CHESSMAN.Color)
     _draw_chessman_pos(screen, (SCREEN_HEIGHT + Stone_Radius2, Start_X + Stone_Radius2 * 4), WHITE_CHESSMAN.Color)
@@ -233,7 +232,7 @@ def _draw_chessman_pos(screen, pos, stone_color):
     pygame.gfxdraw.filled_circle(screen, pos[0], pos[1], Stone_Radius2, stone_color)
 
 
-# 根据鼠标点击位置，返回游戏区坐标
+
 def _get_clickpoint(click_pos):
     pos_x = click_pos[0] - Start_X
     pos_y = click_pos[1] - Start_Y
@@ -285,14 +284,14 @@ class AI:
         return score
 
     def _get_direction_score(self, point, x_offset, y_offset):
-        count = 0  # 落子处我方连续子数
-        _count = 0  # 落子处对方连续子数
-        space = None  # 我方连续子中有无空格
-        _space = None  # 对方连续子中有无空格
-        both = 0  # 我方连续子两端有无阻挡
-        _both = 0  # 对方连续子两端有无阻挡
+        count = 0  
+        _count = 0 
+        space = None  
+        _space = None  
+        both = 0  
+        _both = 0  
 
-        # 如果是 1 表示是边上是我方子，2 表示敌方子
+        
         flag = self._get_stone_color(point, x_offset, y_offset, True)
         if flag != 0:
             for step in range(1, 6):
@@ -311,7 +310,7 @@ class AI:
                             if space is None:
                                 space = False
                             else:
-                                break  # 遇到第二个空格退出
+                                break  
                     elif flag == 2:
                         if self._checkerboard[y][x] == self._my.Value:
                             _both += 1
@@ -326,7 +325,7 @@ class AI:
                             else:
                                 break
                 else:
-                    # 遇到边也就是阻挡
+                    
                     if flag == 1:
                         both += 1
                     elif flag == 2:
@@ -355,7 +354,7 @@ class AI:
                             if space is None:
                                 space = False
                             else:
-                                break  # 遇到第二个空格退出
+                                break  
                     elif _flag == 2:
                         if self._checkerboard[y][x] == self._my.Value:
                             _both += 1
@@ -370,7 +369,7 @@ class AI:
                             else:
                                 break
                 else:
-                    # 遇到边也就是阻挡
+                    
                     if _flag == 1:
                         both += 1
                     elif _flag == 2:
@@ -421,7 +420,7 @@ class AI:
 
         return score
 
-    # 判断指定位置处在指定方向上是我方子、对方子、空
+    
     def _get_stone_color(self, point, x_offset, y_offset, next):
         x = point.X + x_offset
         y = point.Y + y_offset
